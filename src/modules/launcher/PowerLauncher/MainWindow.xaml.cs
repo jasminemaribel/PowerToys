@@ -7,7 +7,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Timers;
 using System.Windows;
-using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Input;
 using interop;
@@ -59,11 +58,6 @@ namespace PowerLauncher
 
             var telemetryEvent = new RunPluginsSettingsEvent(plugins);
             PowerToysTelemetry.Log.WriteEvent(telemetryEvent);
-        }
-
-        public void GetPluginCheatSheet()
-        {
-            SearchBox.CheatSheetControl.ItemsSource = PluginManager.AllPlugins;
         }
 
         private void CheckForFirstDelete(object sender, ElapsedEventArgs e)
@@ -121,7 +115,8 @@ namespace PowerLauncher
             ListBox.SuggestionsList.SelectionChanged += SuggestionsList_SelectionChanged;
             ListBox.SuggestionsList.PreviewMouseLeftButtonUp += SuggestionsList_PreviewMouseLeftButtonUp;
             _viewModel.PropertyChanged += ViewModel_PropertyChanged;
-            GetPluginCheatSheet();
+            _viewModel.MainWindowVisibility = Visibility.Collapsed;
+
             BringProcessToForeground();
         }
 
@@ -332,7 +327,7 @@ namespace PowerLauncher
 
         private void SuggestionsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ModernWpf.Controls.ListView listview = (ModernWpf.Controls.ListView)sender;
+            ListView listview = (ListView)sender;
             _viewModel.Results.SelectedItem = (ResultViewModel)listview.SelectedItem;
             if (e.AddedItems.Count > 0 && e.AddedItems[0] != null)
             {
